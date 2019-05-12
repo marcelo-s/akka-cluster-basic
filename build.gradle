@@ -1,0 +1,25 @@
+plugins {
+    id 'application'
+}
+
+application {
+    mainClassName = 'main.Main'
+}
+
+
+group 'com.test.cluster'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'com.typesafe.akka', name: 'akka-cluster_2.12', version: '2.5.20'
+    compile group: 'com.lightbend.akka.management', name: 'akka-management_2.12', version: '1.0.0-RC2' 
+    compile group: 'com.lightbend.akka.management', name: 'akka-management-cluster-http_2.12', version: '1.0.0-RC2'
+}
