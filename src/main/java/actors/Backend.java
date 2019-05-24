@@ -12,15 +12,15 @@ import static messages.AppMessages.BACKEND_REGISTRATION;
 
 public class Backend extends AbstractLoggingActor {
 
-    Cluster cluster = Cluster.get(getContext().system());
+    private Cluster cluster = Cluster.get(getContext().system());
 
-    //subscribe to cluster changes, MemberUp
+    // Subscribe to cluster events
     @Override
     public void preStart() {
         cluster.subscribe(self(), ClusterEvent.MemberUp.class);
     }
 
-    //re-subscribe when restart
+    // Unsubscribe when finished
     @Override
     public void postStop() {
         cluster.unsubscribe(self());
@@ -41,11 +41,8 @@ public class Backend extends AbstractLoggingActor {
     }
 
     private void onJobReceived(JobMessage job) {
-        String path = self().path().toString();
-        String name = self().path().name();
-
-        log().info(String.format("FROM FRONTEND >>>>>> %s ; JOB: %s", sender().path().toString(), job.getPayload()));
-        sender().tell(new ResultMessage(String.format("FROM BACKEND >>>>>> %s ; RESULT : %s", self().path(), job.getPayload().toUpperCase())), self());
+        log().info("BACKEND >>>>>> RECEIVED JOB : {} FROM : {}", job.getPayload(), sender().path().toString());
+        sender().tell(new ResultMessage(String.format("RESULT : %s FROM BACKEND : %s", job.getPayload().toUpperCase(), self().path())), self());
     }
 
     private void onMemberUp(ClusterEvent.MemberUp memberUp) {

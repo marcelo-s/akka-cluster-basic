@@ -7,8 +7,8 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 
 public class ClusterListener extends AbstractActor {
-    LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
-    Cluster cluster = Cluster.get(getContext().getSystem());
+    private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
+    private Cluster cluster = Cluster.get(getContext().getSystem());
 
     // subscribe to cluster changes
     @Override
@@ -27,23 +27,23 @@ public class ClusterListener extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(ClusterEvent.MemberWeaklyUp.class, mWeekly ->
-                        log.info("********MEMBER WEEKLY: {}", mWeekly.member())
+                        log.info("******** MEMBER WEEKLY: {} ********", mWeekly.member())
                 )
                 .match(
                         ClusterEvent.MemberJoined.class,
-                        mJoin -> log.info("********* MEMBER JOINED: {}", mJoin.member()))
+                        mJoin -> log.info("******** MEMBER JOINED: {} ********", mJoin.member()))
                 .match(
                         ClusterEvent.MemberUp.class,
-                        mUp -> log.info("********** MEMBER UP: {}", mUp.member()))
+                        mUp -> log.info("******** MEMBER UP: {} ********", mUp.member()))
                 .match(
                         ClusterEvent.UnreachableMember.class,
-                        mUnreachable -> log.info("******* MEMBER UNREACHABLE: {}", mUnreachable.member()))
+                        mUnreachable -> log.info("******** MEMBER UNREACHABLE: {} ********", mUnreachable.member()))
                 .match(
                         ClusterEvent.MemberRemoved.class,
-                        mRemoved -> log.info("*************** MEMBER REMOVED: {}", mRemoved.member()))
+                        mRemoved -> log.info("******** MEMBER REMOVED: {} ********", mRemoved.member()))
                 .match(
                         ClusterEvent.MemberEvent.class,
-                        message -> log.info("************UNKNOWN EVENT**************"))
+                        message -> log.info(" ******** UNKNOWN EVENT ********"))
                 .build();
     }
 }

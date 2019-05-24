@@ -4,7 +4,7 @@ import actors.Frontend;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.dispatch.OnSuccess;
+import akka.pattern.Patterns;
 import akka.util.Timeout;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -13,10 +13,10 @@ import scala.concurrent.ExecutionContext;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static akka.pattern.Patterns.ask;
 import static utils.ConfigUtils.getConfig;
 
 public class FrontendMain {
@@ -40,19 +40,17 @@ public class FrontendMain {
         final Timeout timeout = new Timeout(Duration.create(5, TimeUnit.SECONDS));
         final ExecutionContext ec = system.dispatcher();
         final AtomicInteger counter = new AtomicInteger();
-        system.scheduler().schedule(interval, interval, new Runnable() {
-            public void run() {
-                ask(frontend,
+        system.scheduler().schedule(
+                interval,
+                interval,
+                () -> Patterns.ask(
+                        frontend,
                         new AppMessages.JobMessage("hello-" + counter.incrementAndGet()),
-                        timeout).onSuccess(new OnSuccess<Object>() {
-                    public void onSuccess(Object result) {
-                        System.out.println(result);
-                    }
-                }, ec);
-            }
-
-        }, ec);
+                        timeout)
+                        .onComplete(result -> {
+                            System.out.println(result);
+                            return CompletableFuture.completedFuture(result);
+                        }, ec)
+                , ec);
     }
-
-
 }

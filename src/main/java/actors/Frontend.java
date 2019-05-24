@@ -5,7 +5,6 @@ import akka.actor.ActorRef;
 import akka.actor.Terminated;
 import akka.cluster.Cluster;
 import akka.cluster.ClusterEvent;
-import main.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,18 +13,18 @@ import static messages.AppMessages.*;
 
 public class Frontend extends AbstractActor {
 
-    int jobCounter = 0;
-    List<ActorRef> backends = new ArrayList<>();
-    Cluster cluster = Cluster.get(getContext().system());
+    private int jobCounter = 0;
+    private List<ActorRef> backends = new ArrayList<>();
+    private Cluster cluster = Cluster.get(getContext().system());
 
 
-    //subscribe to cluster changes, MemberUp
+    // Subscribe to cluster events
     @Override
     public void preStart() {
         cluster.subscribe(self(), ClusterEvent.MemberUp.class);
     }
 
-    //re-subscribe when restart
+    // Unsubscribe when finished
     @Override
     public void postStop() {
         cluster.unsubscribe(self());
@@ -53,7 +52,6 @@ public class Frontend extends AbstractActor {
         jobCounter++;
         ActorRef backend = backends.get(jobCounter % backends.size());
         JobMessage jobWithInfo = new JobMessage(job.getPayload());
-//        String address = String.format("akka.tcp://%s@127.0.0.1:%s", Main.CLUSTER_SYSTEM_NAME, 2550);
         backend.forward(jobWithInfo, getContext());
     }
 
@@ -61,7 +59,6 @@ public class Frontend extends AbstractActor {
         getContext().watch(sender());
         backends.add(sender());
     }
-
 
     private void onBackendTerminationReceived(Terminated terminated) {
         backends.remove(terminated.getActor());

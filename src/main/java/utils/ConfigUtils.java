@@ -16,8 +16,14 @@ public class ConfigUtils {
     public static Config getConfig(String role, String port, String configFile) {
         final Map<String, Object> properties = new HashMap<>();
 
-        properties.put("akka.remote.netty.tcp.port", port);
-        properties.put("akka.cluster.roles", Arrays.asList(role));
+        if (port != null && !port.isEmpty()) {
+            properties.put("akka.remote.netty.tcp.port", port);
+        }
+
+        if (role != null && !role.isEmpty()) {
+            properties.put("akka.cluster.roles", Arrays.asList(role));
+        }
+
         // Check if a configuration file is provided to load it or use the default application.conf
         Config baseConfig = configFile != null ? ConfigFactory.load(configFile) : ConfigFactory.load();
         return ConfigFactory.parseMap(properties)

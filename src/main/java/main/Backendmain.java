@@ -5,7 +5,6 @@ import actors.ClusterListener;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.management.javadsl.AkkaManagement;
-import akka.routing.FromConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 

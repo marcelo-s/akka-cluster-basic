@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public interface AppMessages {
 
-    public static final String BACKEND_REGISTRATION = "BackendRegistration";
+    String BACKEND_REGISTRATION = "BackendRegistration";
 
-    public static class JobMessage implements Serializable {
+    class JobMessage implements Serializable {
         private String payload;
 
         public JobMessage(String payload) {
@@ -17,12 +17,9 @@ public interface AppMessages {
             return payload;
         }
 
-        public void setPayload(String payload) {
-            this.payload = payload;
-        }
     }
 
-    public static class ResultMessage implements Serializable {
+    class ResultMessage implements Serializable {
         private String text;
 
         public ResultMessage(String text) {
@@ -35,7 +32,7 @@ public interface AppMessages {
         }
     }
 
-    public static class FailedMessage implements Serializable {
+    class FailedMessage implements Serializable {
         private String reason;
         private JobMessage job;
 
