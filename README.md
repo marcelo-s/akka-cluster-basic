@@ -1,6 +1,8 @@
-# Akka Cluster (locally)
+# Akka Cluster (Java)
 
-Basic cluster with frontend and backend
+Basic Akka cluster with frontend and backend nodes.
+
+This projects uses Java.
 
 ## Terms
 
@@ -15,6 +17,7 @@ Backend: Node/System worker of tasks coming from Frontend
 ### Prerequisites
 
 Java 1.8+
+
 Gradle 5.2+
 
 ### Installing/Running
@@ -78,7 +81,7 @@ AppMessages: All the messages for the application. In general there are 3 types 
 ### Application.conf file
 
 Basic configuration file. Provider is set to cluster. The netty tcp is set to localhost for testing and the port is
-"0", this will assign a port automatically. However since the ports are being overridden on the properties for the
+"0", this will assign a port automatically. However, since the ports are being overridden on the properties for the
 nodes, at the creation of the actor system, see Frontendmain.java and main.Backendmain.java, the overridden port will take precedence. 
 
 The backends are designed as seed nodes. The first one on the list should be the first to start to create the cluster. 
